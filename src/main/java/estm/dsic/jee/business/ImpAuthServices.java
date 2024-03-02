@@ -25,15 +25,21 @@ public class ImpAuthServices implements IAuthServices{
     public Response authenticate(User u) {
         User user = authController.authenticate(u);
         if (user != null) {
-            // if user is verified or an admin, create a jwt for that user else return unauthorized
-            Cookie authCookie = new Cookie("token", "jwt");
-            authCookie.setMaxAge(3600);  // Set the cookie to expire in 1 hour (in seconds)
-            authCookie.setPath("/");  // Cookie is accessible across the entire application
-            response.addCookie(authCookie);
-            return Response.status(Response.Status.OK).entity("Login successful").build();
+            if(user.isAdmin() || user.isVerified()){
+                user.setPassword(null);
+                Cookie authCookie = new Cookie("token", user.toString());
+                Cookie idCookie = new Cookie("userID", user.getId().toString());
+                response.addCookie(idCookie);
+                response.addCookie(authCookie);
+                return Response.status(Response.Status.OK).entity(user).build();
+            } else{
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("Please wait tell you are verified.")
+                        .build();
+            }
         } else {
             return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("Invalid Credentials. Please try again.")
+                    .entity("Invalid Credentials.")
                     .build();
         }
     }
@@ -54,7 +60,7 @@ public class ImpAuthServices implements IAuthServices{
 
             // message : "All fields are required"
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("All field are required")
+                    .entity("All fields are required")
                     .build();
         }
         User newUser = authController.register(user);

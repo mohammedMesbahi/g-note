@@ -26,24 +26,24 @@ public class NoteDaoJDBC implements NoteDao, Serializable {
 
     @Override
     public Note get(Integer t) {
-        try(Connection conn= ds.getConnection()) {
+        try (Connection conn = ds.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM notes WHERE id = ?");
             stmt.setInt(1, t);
             ResultSet rs = stmt.executeQuery();
-           rs.next();
-           note.setId(t);
-           note.setSubject(rs.getString("subject"));
-           note.setBody(rs.getString("body"));
-           Timestamp timestamp = rs.getTimestamp("date_time");
+            rs.next();
+            note.setId(t);
+            note.setSubject(rs.getString("subject"));
+            note.setBody(rs.getString("body"));
+            Timestamp timestamp = rs.getTimestamp("date_time");
             note.setDate_time(timestamp.toLocalDateTime());
-           note.setId_user(rs.getInt("id_user"));
-       } catch (SQLException e) {
-           e.printStackTrace();
-       }
-       return note;
+            note.setId_user(rs.getInt("id_user"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return note;
     }
 
-    
+
     public Note create(Note note) {
         try {
             // creat a prepared statement
@@ -68,28 +68,28 @@ public class NoteDaoJDBC implements NoteDao, Serializable {
     }
 
 
-   public Note update(Note note){
-    try (Connection conn= ds.getConnection()) {
-        PreparedStatement stmt = conn.prepareStatement("UPDATE notes SET subject=?, body=?, date_time=?, id_user=? WHERE id=?");
-        stmt.setString(1, note.getSubject());
-        stmt.setString(2, note.getBody());
-        Timestamp timestamp = Timestamp.valueOf(note.getDate_time());
-        stmt.setTimestamp(3, timestamp);
-        stmt.setInt(4, note.getId_user());
-        stmt.setInt(5, note.getId());
-        int rowUpdated=stmt.executeUpdate();
-        if (rowUpdated > 0) {
-            return note;
-        }
+    public Note update(Note note) {
+        try (Connection conn = ds.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("UPDATE notes SET subject=?, body=?, date_time=?, id_user=? WHERE id=?");
+            stmt.setString(1, note.getSubject());
+            stmt.setString(2, note.getBody());
+            Timestamp timestamp = Timestamp.valueOf(note.getDate_time());
+            stmt.setTimestamp(3, timestamp);
+            stmt.setInt(4, note.getId_user());
+            stmt.setInt(5, note.getId());
+            int rowUpdated = stmt.executeUpdate();
+            if (rowUpdated > 0) {
+                return note;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
-   }
+    }
 
-    public Vector<Note> getAllNotes(){
+    public Vector<Note> getAllNotes() {
         Vector<Note> notes = new Vector<>();
-        try (Connection conn= ds.getConnection()) {
+        try (Connection conn = ds.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM notes");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -107,10 +107,11 @@ public class NoteDaoJDBC implements NoteDao, Serializable {
         }
         return notes;
     }
-    public Vector<Note> findNotes(String query){
+
+    public Vector<Note> findNotes(String query) {
         Vector<Note> notes = new Vector<>();
-        query = "%"+query+"%";
-        try (Connection conn= ds.getConnection()) {
+        query = "%" + query + "%";
+        try (Connection conn = ds.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM notes WHERE subject like ? OR body like ?");
             stmt.setString(1, query);
             stmt.setString(2, query);
@@ -130,34 +131,43 @@ public class NoteDaoJDBC implements NoteDao, Serializable {
         }
         return notes;
     }
-    
+
     @Override
-   public Note delete(Note note){
-    
-    try (Connection conn = ds.getConnection()) {
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM notes WHERE id = ?");
-        stmt.setInt(1, note.getId());
-        int rowsDeleted = stmt.executeUpdate();
-        if (rowsDeleted > 0) {
-            return note;
+    public Note delete(Note note) {
+
+        try (Connection conn = ds.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM notes WHERE id = ?");
+            stmt.setInt(1, note.getId());
+            int rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                return note;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return null;
-}
-
-    @Override
-    public User get(User user) {
         return null;
     }
 
     @Override
-    public User get(String email, String password) {
-        return null;
+    public Vector<Note> get(User user) {
+        Vector<Note> notes = new Vector<>();
+        try (Connection conn = ds.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM notes WHERE id_user = ?");
+            stmt.setInt(1, user.getId());
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                note = new Note();
+                note.setId(rs.getInt("id"));
+                note.setSubject(rs.getString("subject"));
+                note.setBody(rs.getString("body"));
+                Timestamp timestamp = rs.getTimestamp("date_time");
+                note.setDate_time(timestamp.toLocalDateTime());
+                note.setId_user(rs.getInt("id_user"));
+                notes.add(note);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return notes;
     }
-
-
-    
-
 }

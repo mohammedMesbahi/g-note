@@ -2,6 +2,7 @@ package estm.dsic.jee.dao.user;
 
 import java.io.Serializable;
 import java.sql.*;
+import java.util.Vector;
 
 import estm.dsic.jee.beans.User;
 import estm.dsic.jee.dao.user.interfaces.UserDao;
@@ -78,12 +79,76 @@ public class UserDaoJDBC implements UserDao, Serializable {
 
     @Override
     public User update(User user) {
-        return null;
+        User newUser = null;
+        try {
+            String query = "UPDATE user SET name=?, email=?, password=?, isVerified=?, isAdmin=? WHERE id=?";
+            PreparedStatement statement = ds.getConnection().prepareStatement(query);
+            statement.setString(1, user.getName());
+            statement.setString(2, user.getEmail());
+            statement.setString(3, user.getPassword());
+            statement.setBoolean(4, user.isVerified());
+            statement.setBoolean(5, user.isAdmin());
+            statement.setInt(6, user.getId());
+            int updatedRows = statement.executeUpdate();
+            if (updatedRows > 0) {
+                newUser = user;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error while updating user");
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error");
+            System.out.println(e.getMessage());
+        }
+        return newUser;
     }
 
     @Override
     public User delete(User user) {
-        return null;
+        User deletedUser = null;
+        try {
+            String query = "DELETE FROM user WHERE id=?";
+            PreparedStatement statement = ds.getConnection().prepareStatement(query);
+            statement.setInt(1, user.getId());
+            int deletedRows = statement.executeUpdate();
+            if (deletedRows > 0) {
+                deletedUser = user;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while deleting user");
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error");
+            System.out.println(e.getMessage());
+        }
+        return deletedUser;
+    }
+
+    @Override
+    public Vector<User> getAll() {
+        Vector<User> users = new Vector<>();
+        try {
+            String query = "SELECT * FROM user where !isadmin";
+            PreparedStatement statement = ds.getConnection().prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getInt("id"));
+                user.setName(resultSet.getString("name"));
+                user.setEmail(resultSet.getString("email"));
+                user.setVerified(resultSet.getBoolean("isverified"));
+                user.setAdmin(resultSet.getBoolean("isadmin"));
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while getting all users");
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error");
+            System.out.println(e.getMessage());
+        }
+        return users;
     }
 
     @Override
@@ -100,6 +165,8 @@ public class UserDaoJDBC implements UserDao, Serializable {
                 user1.setName(resultSet.getString("name"));
                 user1.setEmail(resultSet.getString("email"));
                 user1.setPassword(resultSet.getString("password"));
+                user1.setVerified(resultSet.getBoolean("isverified"));
+                user1.setAdmin(resultSet.getBoolean("isadmin"));
             }
 
         } catch (SQLException e) {
@@ -127,6 +194,8 @@ public class UserDaoJDBC implements UserDao, Serializable {
                 user.setName(resultSet.getString("name"));
                 user.setEmail(resultSet.getString("email"));
                 user.setPassword(resultSet.getString("password"));
+                user.setVerified(resultSet.getBoolean("isverified"));
+                user.setAdmin(resultSet.getBoolean("isadmin"));
             }
         } catch (SQLException e) {
             System.out.println("Error while getting user");
@@ -136,5 +205,27 @@ public class UserDaoJDBC implements UserDao, Serializable {
             System.out.println(e.getMessage());
         }
         return user;
+    }
+
+    @Override
+    public User verify(User user) {
+        User verifiedUser = null;
+        try {
+            String query = "UPDATE user SET isverified = ? WHERE id = ?";
+            PreparedStatement statement = ds.getConnection().prepareStatement(query);
+            statement.setBoolean(1, user.isVerified());
+            statement.setInt(2, user.getId());
+            int updatedRows = statement.executeUpdate();
+            if (updatedRows > 0) {
+                verifiedUser = user;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while verifying user");
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error");
+            System.out.println(e.getMessage());
+        }
+        return verifiedUser;
     }
 }

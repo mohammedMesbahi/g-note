@@ -8,31 +8,25 @@ public class User implements Serializable{
     private String name;
     private String email;
     private String password;
-    private Boolean admin = false;
-    private Boolean verified = false;
+    private Boolean admin ;
+    private Boolean verified ;
+    public User(){
+        this.admin = false;
+        this.verified = false;
+    }
 
     public Boolean isAdmin(){
         return admin;
     }
-    public void isAdmin(Boolean admin){
-        this.admin =admin;
-    }
     public Boolean isVerified() {
         return verified;
     }
-    public void isVerified(Boolean verified) {
+    public void setVerified(Boolean verified) {
         this.verified = verified;
-    }
-
-    public Boolean getAdmin() {
-        return admin;
     }
 
     public void setAdmin(Boolean admin) {
         this.admin = admin;
-    }
-
-    public User() {
     }
     public User(String name, String email, String password) {
         setName(name);

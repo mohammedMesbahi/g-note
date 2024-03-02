@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Vector;
 
 import estm.dsic.jee.beans.Note;
+import estm.dsic.jee.beans.User;
 import estm.dsic.jee.controllers.note.interfaces.INoteController;
 import estm.dsic.jee.dao.note.NoteDaoJDBC;
 import jakarta.inject.Inject;
@@ -13,10 +14,6 @@ import jakarta.enterprise.context.SessionScoped;
 @Named
 @SessionScoped
 public class DefaultNoteController implements INoteController {
-    public DefaultNoteController(){
-        super();
-    }
-
     @Inject
     NoteDaoJDBC noteDaoJDBC;
     @Override
@@ -24,8 +21,7 @@ public class DefaultNoteController implements INoteController {
         if(note.getDate_time()==null){
             note.setDate_time(LocalDateTime.now());
         }
-        noteDaoJDBC.create(note);
-        return note;
+        return noteDaoJDBC.create(note);
     }
 
     @Override
@@ -41,6 +37,11 @@ public class DefaultNoteController implements INoteController {
     @Override
     public Vector<Note> getAllNotes() {
         return noteDaoJDBC.getAllNotes();
+    }
+
+    @Override
+    public Vector<Note> get(User user) {
+        return noteDaoJDBC.get(user);
     }
 
     @Override

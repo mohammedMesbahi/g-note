@@ -5,7 +5,9 @@ import estm.dsic.jee.beans.Note;
 import estm.dsic.jee.beans.User;
 import estm.dsic.jee.dao.CrudAble;
 
+import java.util.Vector;
+
 public interface NoteDao extends CrudAble<Note, Integer> {
-    User get(User user);
-    User get(String email, String password);
+    Vector<Note> get(User user);
+
 }
