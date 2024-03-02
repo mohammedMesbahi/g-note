@@ -8,7 +8,6 @@ public class Note {
     private String subject;
     private String body;
     private Integer id_user;
-    private Boolean isVerified;
 
     public Integer getId() {
         return id;
@@ -50,11 +49,4 @@ public class Note {
         this.id_user = id_user;
     }
 
-    public Boolean getIsVerified() {
-        return isVerified;
-    }
-
-    public void setIsVerified(Boolean isVerified) {
-        this.isVerified = isVerified;
-    }
 }
