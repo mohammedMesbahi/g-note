@@ -1,4 +1,4 @@
-package estm.dsic.umi.controllers;
+package estm.dsic.jee.controllers;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;

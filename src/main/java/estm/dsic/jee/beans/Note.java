@@ -1,10 +1,10 @@
 package estm.dsic.jee.beans;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Note {
     private Integer id;
-    private Date date_time;
+    private LocalDateTime date_time;
     private String subject;
     private String body;
     private Integer id_user;
@@ -18,11 +18,11 @@ public class Note {
         this.id = id;
     }
 
-    public Date getDate_time() {
+    public LocalDateTime getDate_time() {
         return date_time;
     }
 
-    public void setDate_time(Date date_time) {
+    public void setDate_time(LocalDateTime date_time) {
         this.date_time = date_time;
     }
 
