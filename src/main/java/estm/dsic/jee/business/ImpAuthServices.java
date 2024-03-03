@@ -78,9 +78,14 @@ public class ImpAuthServices implements IAuthServices{
     public Response logout(@Context HttpServletResponse response) {
         // Invalidate the existing authentication cookie (assuming you have one)
         Cookie authCookie = new Cookie("token", "");
+        Cookie idCookie = new Cookie("userID","");
+
         authCookie.setMaxAge(0);  // Set the cookie to expire immediately
+        idCookie.setMaxAge(0);
         authCookie.setPath("/");  // Cookie path should match the path used during login
+        idCookie.setPath("/");
         response.addCookie(authCookie);
+        response.addCookie(idCookie);
 
         // Perform any other logout-related operations
 

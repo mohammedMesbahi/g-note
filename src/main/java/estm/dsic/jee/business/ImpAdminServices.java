@@ -12,11 +12,11 @@ import jakarta.ws.rs.core.Response;
 public class ImpAdminServices implements IAdminServices {
     @Inject
     DefaultAdminController defaultAdminController;
+    @PUT
     @Path("/user/verify")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Override
-    @POST
     public Response verifyUser(User user) {
         User updatedUser =  defaultAdminController.verifyUser(user);
         if (updatedUser != null) {
