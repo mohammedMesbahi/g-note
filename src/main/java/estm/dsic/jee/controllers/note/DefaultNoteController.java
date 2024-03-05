@@ -35,8 +35,8 @@ public class DefaultNoteController implements INoteController {
     }
 
     @Override
-    public Vector<Note> getAllNotes() {
-        return noteDaoJDBC.getAllNotes();
+    public Vector<Note> getAllNotes(int id) {
+        return noteDaoJDBC.getAllNotes(id);
     }
 
     @Override

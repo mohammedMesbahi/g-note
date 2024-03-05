@@ -28,22 +28,22 @@ public class ImpNoteServices implements INoteServices {
     DefaultNoteController noteController;
 
     @GET
-    @Path("/all")
+    @Path("/all/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Vector<Note> get() {
+    public Vector<Note> get(@PathParam("userId") int id) {
         // parse from the request the cookie token the  id of the user
-        Map<String, Cookie> cookies = headers.getCookies();
-        Cookie tokenCookie = cookies.get("userID");
-
-        if (tokenCookie != null) {
+        //Map<String, Cookie> cookies = headers.getCookies();
+        //Cookie tokenCookie = cookies.get("userID");
+        Vector<Note> notes=noteController.getAllNotes(id);
+        /* if (tokenCookie != null) {
             String userId = tokenCookie.getValue();
             User user = new User();
             user.setId(Integer.parseInt(userId));
-            return noteController.get(user);
-        } else {
-            return null;
-        }
+            notes=noteController.getAllNotes(user.getId());
+        }  */
+
+        return notes;
     }
 
 
@@ -51,7 +51,9 @@ public class ImpNoteServices implements INoteServices {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addNote(Note note) {
+        System.out.println(note.getSubject());
         Note newNote = noteController.createNote(note);
+        
         if (newNote != null) {
             return Response.ok().entity(newNote).build();
         } else {
@@ -73,6 +75,7 @@ public class ImpNoteServices implements INoteServices {
     }
 
     @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteNote(Note note) {
         if (noteController.delete(note) != null) {

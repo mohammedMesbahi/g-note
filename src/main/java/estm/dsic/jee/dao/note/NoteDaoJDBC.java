@@ -20,8 +20,9 @@ import java.sql.Timestamp;
 @Named
 @SessionScoped
 public class NoteDaoJDBC implements NoteDao, Serializable {
-    @Resource(lookup = "jdbc/tp2_jee")
+    @Resource(lookup = "jdbc/tp3_jee")
     private DataSource ds;
+
     Note note;
 
     @Override
@@ -47,11 +48,13 @@ public class NoteDaoJDBC implements NoteDao, Serializable {
     public Note create(Note note) {
         try {
             // creat a prepared statement
-            String query = "INSERT INTO note (title, content, user_id) VALUES (?, ?, ?)";
+            String query = "INSERT INTO note (subject, body,date_time, id_user) VALUES (?, ?,?, ?)";
             PreparedStatement statement = ds.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, note.getSubject());
             statement.setString(2, note.getBody());
-            statement.setInt(3, note.getId_user());
+            Timestamp timestamp = Timestamp.valueOf(note.getDate_time());
+            statement.setTimestamp(3, timestamp);
+            statement.setInt(4, note.getId_user());
             statement.executeUpdate();
             ResultSet rs = statement.getGeneratedKeys();
             if (rs.next()) {
@@ -87,10 +90,11 @@ public class NoteDaoJDBC implements NoteDao, Serializable {
         return null;
     }
 
-    public Vector<Note> getAllNotes() {
+    public Vector<Note> getAllNotes(int id) {
         Vector<Note> notes = new Vector<>();
         try (Connection conn = ds.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM notes");
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM note where id_user=?");
+            stmt.setInt(1,id);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 note = new Note();
@@ -136,7 +140,7 @@ public class NoteDaoJDBC implements NoteDao, Serializable {
     public Note delete(Note note) {
 
         try (Connection conn = ds.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("DELETE FROM notes WHERE id = ?");
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM note WHERE id = ?");
             stmt.setInt(1, note.getId());
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {

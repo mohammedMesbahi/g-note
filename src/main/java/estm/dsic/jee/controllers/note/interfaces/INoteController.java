@@ -10,7 +10,7 @@ public interface INoteController extends Serializable {
     Note createNote(Note note);
     Note update(Note note);
     Note delete(Note note);
-    Vector<Note> getAllNotes();
+    Vector<Note> getAllNotes(int id);
     Vector<Note> get(User user);
     Vector<Note> findNotes(String query);
 }

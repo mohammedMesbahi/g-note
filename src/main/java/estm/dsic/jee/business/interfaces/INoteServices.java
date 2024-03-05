@@ -9,7 +9,7 @@ import jakarta.ws.rs.core.Response;
 
 public interface INoteServices {
 //    Vector<Note> getAllNotes();
-    Vector<Note> get();
+    Vector<Note> get(int id);
     Response addNote(Note note);
     Response updateNote(Note note);
     Response deleteNote(Note note);
