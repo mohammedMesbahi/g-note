@@ -1,6 +1,5 @@
 package estm.dsic.jee.business;
 
-import java.net.http.HttpRequest;
 import java.util.Map;
 import java.util.Vector;
 
@@ -17,13 +16,18 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.core.*;
-
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Cookie;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @Path("/notes")
 public class ImpNoteServices implements INoteServices {
     @Context
     HttpHeaders headers;
+    @Context
+    HttpHeaders request;
     @Inject
     DefaultNoteController noteController;
 
@@ -42,7 +46,6 @@ public class ImpNoteServices implements INoteServices {
             user.setId(Integer.parseInt(userId));
             notes=noteController.getAllNotes(user.getId());
         }  */
-
         return notes;
     }
 
@@ -51,9 +54,8 @@ public class ImpNoteServices implements INoteServices {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addNote(Note note) {
-        System.out.println(note.getSubject());
         Note newNote = noteController.createNote(note);
-        
+
         if (newNote != null) {
             return Response.ok().entity(newNote).build();
         } else {
@@ -68,8 +70,9 @@ public class ImpNoteServices implements INoteServices {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateNote(Note note) {
-        if (noteController.update(note) != null) {
-            return Response.ok().build();
+        Note updatedNote = noteController.update(note);
+        if ( updatedNote!= null) {
+            return Response.ok().entity(updatedNote).build();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }

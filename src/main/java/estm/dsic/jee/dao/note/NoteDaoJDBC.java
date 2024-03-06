@@ -28,7 +28,7 @@ public class NoteDaoJDBC implements NoteDao, Serializable {
     @Override
     public Note get(Integer t) {
         try (Connection conn = ds.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM notes WHERE id = ?");
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM note WHERE id = ?");
             stmt.setInt(1, t);
             ResultSet rs = stmt.executeQuery();
             rs.next();
@@ -45,7 +45,7 @@ public class NoteDaoJDBC implements NoteDao, Serializable {
     }
 
 
-    public Note create(Note note) {
+    public Note create(Note note) { // create a note
         try {
             // creat a prepared statement
             String query = "INSERT INTO note (subject, body,date_time, id_user) VALUES (?, ?,?, ?)";
@@ -73,13 +73,10 @@ public class NoteDaoJDBC implements NoteDao, Serializable {
 
     public Note update(Note note) {
         try (Connection conn = ds.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("UPDATE notes SET subject=?, body=?, date_time=?, id_user=? WHERE id=?");
+            PreparedStatement stmt = conn.prepareStatement("UPDATE note SET subject=?, body=? WHERE id=?");
             stmt.setString(1, note.getSubject());
             stmt.setString(2, note.getBody());
-            Timestamp timestamp = Timestamp.valueOf(note.getDate_time());
-            stmt.setTimestamp(3, timestamp);
-            stmt.setInt(4, note.getId_user());
-            stmt.setInt(5, note.getId());
+            stmt.setInt(3, note.getId());
             int rowUpdated = stmt.executeUpdate();
             if (rowUpdated > 0) {
                 return note;

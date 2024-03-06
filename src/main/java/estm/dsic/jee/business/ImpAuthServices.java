@@ -3,12 +3,12 @@ import estm.dsic.jee.beans.User;
 import estm.dsic.jee.business.interfaces.IAuthServices;
 import estm.dsic.jee.controllers.auth.DefaultAuthController;
 import jakarta.inject.Inject;
-import jakarta.servlet.http.Cookie;
+import jakarta.ws.rs.core.NewCookie;
+import jakarta.ws.rs.core.Response;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
 @Path("/auth")
 public class ImpAuthServices implements IAuthServices{
@@ -27,11 +27,11 @@ public class ImpAuthServices implements IAuthServices{
         if (user != null) {
             if(user.isAdmin() || user.isVerified()){
                 user.setPassword(null);
-                Cookie authCookie = new Cookie("token", user.toString());
-                Cookie idCookie = new Cookie("userID", user.getId().toString());
-                response.addCookie(idCookie);
-                response.addCookie(authCookie);
-                return Response.status(Response.Status.OK).entity(user).build();
+                NewCookie idNewCookie = new NewCookie("userID", user.getId().toString(), "/", null, null, 60*60*24, false);
+
+                return Response.status(Response.Status.OK)
+                        .cookie(idNewCookie)
+                        .entity(user).build();
             } else{
                 return Response.status(Response.Status.UNAUTHORIZED)
                         .entity("Please wait tell you are verified.")
@@ -77,25 +77,25 @@ public class ImpAuthServices implements IAuthServices{
     @Path("logout")
     public Response logout(@Context HttpServletResponse response) {
         // Invalidate the existing authentication cookie (assuming you have one)
-        Cookie authCookie = new Cookie("token", "");
-        Cookie idCookie = new Cookie("userID","");
+        NewCookie idNewCookie = new NewCookie("userID","");
 
-        authCookie.setMaxAge(0);  // Set the cookie to expire immediately
-        idCookie.setMaxAge(0);
-        authCookie.setPath("/");  // Cookie path should match the path used during login
-        idCookie.setPath("/");
-        response.addCookie(authCookie);
-        response.addCookie(idCookie);
 
         // Perform any other logout-related operations
 
-        return Response.status(Response.Status.OK).entity("Logout successful").build();
+        return Response.status(Response.Status.OK)
+                .cookie(idNewCookie)
+                .entity("Logout successful").build();
     }
 
     @GET
     @Path("hello")
     @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return "Hello";
+    public Response hello() {
+
+        NewCookie idNewCookie = new NewCookie("userID", String.valueOf(10), "/", null, null, 60*60*24, true);
+
+        return Response.status(Response.Status.OK)
+                .cookie(idNewCookie)
+                .entity("welcome to cabol").build();
     }
 }

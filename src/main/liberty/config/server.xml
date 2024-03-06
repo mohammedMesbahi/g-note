@@ -48,6 +48,15 @@
 
     <!-- Configures the application on a specified context root -->
     <webApplication contextRoot="/g-note" location="g-note.war" />
+    <cors domain="/*">
+        <allowedOrigins>*</allowedOrigins>
+        <allowedMethods>GET, POST, PUT, DELETE, OPTIONS, HEAD</allowedMethods>
+        <allowedHeaders>*</allowedHeaders>
+        <exposeHeaders>userID</exposeHeaders>
+        <allowCredentials>true</allowCredentials>
+
+    </cors>
+
 
     <!-- Default SSL configuration enables trust for default certificates from the Java runtime -->
     <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
