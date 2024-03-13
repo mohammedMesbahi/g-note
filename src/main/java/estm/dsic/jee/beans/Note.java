@@ -1,60 +1,37 @@
 package estm.dsic.jee.beans;
 
+import jakarta.persistence.*;
+
 import java.util.Date;
 
+@Entity
+@Table(name = "note")
 public class Note {
-    private Integer id;
+    @Id
+    private Long id;
     private Date date_time;
     private String subject;
     private String body;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user")
+    private User user;
     private Integer id_user;
-    private Boolean isVerified;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
-    }
-
-    public Date getDate_time() {
-        return date_time;
-    }
-
-    public void setDate_time(Date date_time) {
-        this.date_time = date_time;
     }
 
     public String getSubject() {
         return subject;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
     public String getBody() {
         return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
     }
 
     public Integer getId_user() {
         return id_user;
     }
 
-    public void setId_user(Integer id_user) {
-        this.id_user = id_user;
-    }
-
-    public Boolean getIsVerified() {
-        return isVerified;
-    }
-
-    public void setIsVerified(Boolean isVerified) {
-        this.isVerified = isVerified;
-    }
 }

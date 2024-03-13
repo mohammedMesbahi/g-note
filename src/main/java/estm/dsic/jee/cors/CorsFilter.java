@@ -1,4 +1,4 @@
-package estm.dsic.umi.cors;
+package estm.dsic.jee.cors;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

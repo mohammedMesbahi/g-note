@@ -1,4 +1,4 @@
-package estm.dsic.umi.dao.interfaces;
+package estm.dsic.jee.dao.user.interfaces;
 
 public interface CrudAble<T, L> {
     T get(L t);

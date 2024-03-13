@@ -1,30 +1,26 @@
 package estm.dsic.jee.dao.user;
 
-import java.io.Serializable;
-import java.sql.*;
-
 import estm.dsic.jee.beans.User;
 import estm.dsic.jee.dao.user.interfaces.UserDao;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 @Named
 @SessionScoped
+
 public class UserDaoJDBC implements UserDao, Serializable {
     @Resource(lookup = "jdbc/tp3_jee")
     private DataSource ds;
     public UserDaoJDBC() {
-        /*try {
-            InitialContext ctx = new InitialContext();
-            ds = (DataSource) ctx.lookup("jdbc/tp2_jee");
-        } catch (NamingException e) {
-            e.printStackTrace();
-        }*/
+
     }
     @Override
     public User get(Integer id) {
@@ -36,7 +32,7 @@ public class UserDaoJDBC implements UserDao, Serializable {
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
                 user = new User();
-                user.setId(resultSet.getInt("id"));
+                user.setId(resultSet.getLong("id"));
                 user.setEmail(resultSet.getString("email"));
                 user.setPassword(resultSet.getString("password"));
             }
@@ -64,7 +60,7 @@ public class UserDaoJDBC implements UserDao, Serializable {
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
-                user.setId(resultSet.getInt(1));
+                user.setId(resultSet.getLong(1));
             }
         } catch (SQLException e) {
             System.out.println("Error while creating user");
@@ -92,11 +88,11 @@ public class UserDaoJDBC implements UserDao, Serializable {
         try {
             String query = "SELECT * FROM user WHERE id = ?";
             PreparedStatement statement = ds.getConnection().prepareStatement(query);
-            statement.setInt(1, user.getId());
+            statement.setLong(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 user1 = new User();
-                user1.setId(resultSet.getInt("id"));
+                user1.setId(resultSet.getLong("id"));
                 user1.setName(resultSet.getString("name"));
                 user1.setEmail(resultSet.getString("email"));
                 user1.setPassword(resultSet.getString("password"));
@@ -123,7 +119,7 @@ public class UserDaoJDBC implements UserDao, Serializable {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 user = new User();
-                user.setId(resultSet.getInt("id"));
+                user.setId(resultSet.getLong("id"));
                 user.setName(resultSet.getString("name"));
                 user.setEmail(resultSet.getString("email"));
                 user.setPassword(resultSet.getString("password"));

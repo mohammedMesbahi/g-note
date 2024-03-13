@@ -1,10 +1,19 @@
 package estm.dsic.jee.beans;
 
-import java.io.Serializable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
+import java.io.Serializable;
+import java.util.List;
+
+@Entity
+@Table(name = "user")
 public class User implements Serializable{
     
-    private Integer id;
+    @Id
+    private long id;
     private String name;
     private String email;
     private String password;
@@ -45,10 +54,12 @@ public class User implements Serializable{
         setPassword(password);
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
-
+    public void setId(Long id) {
+        this.id = id;
+    }
     public String getEmail() {
         return email;
     }
@@ -57,9 +68,6 @@ public class User implements Serializable{
         return password;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public void setEmail(String email) {
         this.email = email;

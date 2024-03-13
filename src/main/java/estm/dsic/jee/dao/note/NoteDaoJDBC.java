@@ -37,7 +37,7 @@ public class NoteDaoJDBC implements NoteDao, Serializable {
             statement.executeUpdate();
             ResultSet rs = statement.getGeneratedKeys();
             if (rs.next()) {
-                note.setId(rs.getInt(1));
+                note.setId(rs.getLong(1));
             }
         } catch (SQLException e) {
             System.out.println("Error while creating note");
